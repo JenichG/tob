@@ -416,12 +416,7 @@ let modules = {
                     {name: "Автосалон Грида", type: "select", key: "avto", value: 1, list: ["выкл", "норм", "проф", "маст"]},
                     {name: "Склады Седого", type: "select", key: "warehouse", value: 1, list: ["выкл", "норм", "проф", "маст"]},
                     {name: "Последний полет", type: "select", key: "fly", value: 1, list: ["выкл", "норм", "проф", "маст"]},
-                    {name: "Сорванная башня", type: "select", key: "nebo", value: 1, list: ["выкл", "норм", "проф", "маст"]},
                     {name: "Воскресный шоппинг", type: "select", key: "shopping", value: 1, list: ["выкл", "норм", "проф", "маст"]},
-                    {name: "Пляжная вечеринка", type: "select", key: "beach", value: 1, list: ["выкл", "норм", "проф", "маст"]},
-                    {name: "Смертельный форсаж", type: "select", key: "furious", value: 0, list: ["выкл", "норм", "проф", "маст"]},
-                    {name: "Стрелка в парке", type: "select", key: "park", value: 0, list: ["выкл", "норм", "проф", "маст"]},
-                    {name: "Бункер", type: "select", key: "operation_bunker", value: 0, list: ["выкл", "норм", "проф", "маст"]}
                 ],
                  getNextScene: function() {
                     let teamNotification = document.querySelector('div > span > img[src="https://img1.bratki.mobi/images/NPCs/agents_boss.gld.png"]');
