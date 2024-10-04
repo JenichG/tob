@@ -676,13 +676,13 @@ var modules = {
     }
 };
 
-var GUI = {
+let GUI = {
     createMenu: function() {
-        var style = document.createElement("style");
+        let style = document.createElement("style");
         style.innerHTML = switchStyle;
         document.head.appendChild(style);
-        var isFullWidth = window.innerWidth < 600;
-        var menu = lib.ce("div", {style: "background: #000; opacity: 0.7; border-radius: 3px; position: absolute; color: #fff; transition: 500ms; z-index: 2000;",
+        let isFullWidth = window.innerWidth < 600;
+        let menu = lib.ce("div", {style: "background: #000; opacity: 0.3; border-radius: 3px; position: absolute; color: white; transition: 500ms; z-index: 2000;",
                                  onmousemove: function() {this.style.opacity = "1";}, onmouseout: function() {this.style.opacity = "0.7";}});
         if(isFullWidth) {
             //menu.style.left = "0";
@@ -693,21 +693,21 @@ var GUI = {
                 menu.style.top = "0px";
                 menu.style.left = "10px";
             } else {
-                var pos = lib.getCookie("menu_position").split(".");
+                let pos = lib.getCookie("menu_position").split(".");
                 menu.style.top = pos[1];
                 menu.style.left = pos[0];
             }
         }
-        var title = lib.ce("div", {style: "padding: 5px; cursor: pointer;", innerHTML: "меню"}, menu);
-        var info = lib.ce("div", {style: "overflow: hidden; position: absolute; right: 5px; top: 0; transition: 500ms;"});
-        var timer = lib.ce("div", {style: "display: inline-block; font-size: 12px; transition: 500ms;"}, info);
-
-        var moved = false;
+        let title = lib.ce("div", {style: "padding: 5px; cursor: pointer;", innerHTML: "меню"}, menu);
+        let info = lib.ce("div", {style: "overflow: hidden; position: absolute; right: 5px; top: 0; transition: 500ms;"});
+        let timer = lib.ce("div", {style: "display: inline-block; font-size: 12px; transition: 500ms;"}, info);
+        
+        let moved = false;
         if(!isFullWidth) {
             title.onmousedown = function(e) {
                 menu.style.transition = "0s";
-                var x = e.offsetX;
-                var y = e.offsetY;
+                let x = e.offsetX;
+                let y = e.offsetY;
                 moveAt(e);
 
                 function moveAt(e) {
@@ -717,7 +717,7 @@ var GUI = {
                 }
 
                 document.onmousemove = function(e) {
-                    var len = Math.sqrt(Math.pow(x - e.offsetX, 2) + Math.pow(y - e.offsetY, 2));
+                    let len = Math.sqrt(Math.pow(x - e.offsetX, 2) + Math.pow(y - e.offsetY, 2));
                     if(len > 2) moved = true;
                     moveAt(e);
                 };
@@ -725,13 +725,15 @@ var GUI = {
                 title.onmouseup = function() {
                     document.onmousemove = null;
                     menu.style.transition = "500ms";
-                    title.onmouseup = null;
+                    title.onmouseup = null;  
                 };
+                
             };
         }
 
-        var content = lib.ce("div", {style: "transition: 250ms; overflow: hidden; max-height: 0; max-width:0; padding: 0;"}, menu);
-        var menuOpened = false;
+
+        let content = lib.ce("div", {style: "transition: 250ms; overflow: hidden; max-height: 0; max-width:0; padding: 0;"}, menu);
+        let menuOpened = false;
 
         title.onclick = function() {
             if(moved) {
@@ -763,41 +765,40 @@ var GUI = {
             }
         };
 
-        var paused = engine.paused;
+        var paused = true; // Начальное состояние - на паузе
         var bottomPause;
         var bottomText;
+        
         var pause = lib.ce("img", {style: "cursor: pointer;"}, info);
         pause.src = paused ? icPlayUrl : icPauseUrl;
-        pause.onclick = function() {
-            paused = !paused;
-            engine.paused = paused;
-            bottomText.innerHTML = paused ? "Запустить" : "Остановить";
-            this.src = paused ? icPlayUrl : icPauseUrl;
-            bottomPause.src = this.src;
-            if(!paused) engine.waitScene(engine.handleScene);
-            lib.setCookie("paused", paused ? 1 : 0);
-        };
+        pause.onclick = togglePause;
         menu.appendChild(info);
-
+        
         var bottomBlock = lib.ce("div", {id: "playpause", style: "overflow:hidden; transition: 250ms; cursor: pointer;"}, menu);
-
         var bottomLine = lib.ce("div", {style: "margin-top: -3px; left: 0; right: 0; height: 1px; background: #fff;"}, bottomBlock);
         GUI.bottomProgress = new ProgressBar(bottomLine, "#2196F3");
         bottomLine.style.position = "absolute";
         bottomLine.appendChild(GUI.bottomProgress.getElement());
-
+        
         bottomPause = lib.ce("img", {src: paused ? icPlayUrl : icPauseUrl}, bottomBlock);
         bottomText = lib.ce("div", {style: "position: relative; top: 2px; display: inline-block;", innerHTML: paused ? "Запустить" : "Остановить"}, bottomBlock);
-
-        bottomBlock.onclick = function() {
+        
+        bottomBlock.onclick = togglePause;
+        
+        // Добавляем таймер на переключение в режим "запущен" через 3 секунды
+        setTimeout(function() {
+            togglePause(); // Вызываем функцию togglePause после 3 секунд
+        }, 2000);
+        
+        function togglePause() {
             paused = !paused;
             engine.paused = paused;
             bottomPause.src = paused ? icPlayUrl : icPauseUrl;
             bottomText.innerHTML = paused ? "Запустить" : "Остановить";
             pause.src = bottomPause.src;
-            if(!paused) engine.waitScene(engine.handleScene);
+            if (!paused) engine.waitScene(engine.handleScene);
             lib.setCookie("paused", paused ? 1 : 0);
-        };
+        }
 
         GUI.showBottom = function() {
             bottomBlock.style.padding = "5px";
@@ -813,7 +814,7 @@ var GUI = {
 
         GUI.hideBottom();
 
-        var notifyBlock = lib.ce("div", {id: "notifyblock", style: "border-top: 1px solid #fff; font-size: 12px; overflow:hidden; transition: 250ms;"}, menu);
+        let notifyBlock = lib.ce("div", {id: "notifyblock", style: "border-top: 1px solid #fff; font-size: 12px; overflow:hidden; transition: 250ms;"}, menu);
         GUI.showMsg = function(msg) {
             notifyBlock.style.padding = "5px";
             notifyBlock.style.maxHeight = "500px";
@@ -833,7 +834,7 @@ var GUI = {
     },
 
     closeAllPopup: function() {
-        for(var idx in modules) {
+        for(let idx in modules) {
             if(modules[idx].descPopup) modules[idx].descPopup.hide();
             //if(modules[idx].setPopup) modules[idx].setPopup.hide();
         }
